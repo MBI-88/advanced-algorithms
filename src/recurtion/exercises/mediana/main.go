@@ -2,6 +2,7 @@ package main
 
 import (
 	"fmt"
+	"slices"
 	"time"
 )
 
@@ -32,6 +33,7 @@ import (
 	Ejemplo
 	Secuencia
 	2 5 4 3 1
+	1 2 3 4 5
 	Interacción
 
 	1. GetN() regresa 5.
@@ -63,6 +65,7 @@ func (d *device) quickSelection(labels []int) int {
 	var (
 		space     = make([]int, 0, len(labels))
 		backtrack func(int)
+		mediana int
 	)
 
 	backtrack = func(i int) {
@@ -79,7 +82,14 @@ func (d *device) quickSelection(labels []int) int {
 	}
 
 	backtrack(0)
-	return d.localLabels[0]
+	slices.Sort(d.localLabels)
+	l := len(d.localLabels) 
+	if l%2 == 0 {
+		mediana = d.localLabels[l/2]
+	}else {
+		mediana = d.localLabels[(l+1)/2]
+	}
+	return mediana
 }
 
 func (d *device) media3(a, b, c int) int {
