@@ -112,7 +112,7 @@ func (d *device) answer(label int) {
 }
 
 func main() {
-	array := []int{2, 5, 4, 3, 1}
+	array := []int{2, 5, 4, 1, 3}
 	labels := make([]int, 0, len(array))
 	d := newDevice(array)
 
