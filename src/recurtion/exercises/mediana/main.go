@@ -2,7 +2,6 @@ package main
 
 import (
 	"fmt"
-	"math/rand"
 	"time"
 )
 
@@ -43,8 +42,9 @@ import (
 */
 
 type device struct {
-	labelPower map[int]int // label -> power
-	powers     []int
+	labelPower  map[int]int // label -> power
+	powers      []int
+	localLabels []int
 }
 
 func newDevice(array []int) *device {
@@ -55,45 +55,31 @@ func newDevice(array []int) *device {
 	return &device{
 		powers:     array,
 		labelPower: temp,
+		localLabels: make([]int, 0,len(array) * 2),
 	}
 }
 
 func (d *device) quickSelection(labels []int) int {
-	if len(labels) < 3 {
-		return labels[0]
-	}
-	n := len(labels)
-	a := labels[rand.Intn(n)]
-	b := labels[rand.Intn(n)]
-	for b == a {
-		b = labels[rand.Intn(n)]
-	}
-	c := labels[rand.Intn(n)]
-	for c == a || c == b {
-		c = labels[rand.Intn(n)]
-	}
+	var (
+		space     = make([]int, 0, len(labels))
+		backtrack func(int)
+	)
 
-	pv := d.media3(a, b, c)
-	left, right := make([]int, 0, len(labels)), make([]int, 0, len(labels))
-	for _, l := range labels {
-		if l == pv {
-			continue
+	backtrack = func(i int) {
+		if len(space) == 3 {
+			d.localLabels = append(d.localLabels, d.media3(space[0], space[1], space[2]))
+			return 
 		}
-		media := d.media3(pv, l, c)
-		if media == l {
-			right = append(right, l)
-		} else {
-			left = append(left, l)
+
+		for t := i; t < len(labels); t++ {
+			space = append(space, labels[t])
+			backtrack(t + 1)
+			space = space[:len(space)-1]
 		}
 	}
 
-	if len(left) == len(right) {
-		return pv
-	} else if len(left) > len(right) {
-		return d.quickSelection(left)
-	} else {
-		return d.quickSelection(right)
-	}
+	backtrack(0)
+	return d.localLabels[0]
 }
 
 func (d *device) media3(a, b, c int) int {
