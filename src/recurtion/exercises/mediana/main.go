@@ -2,7 +2,6 @@ package main
 
 import (
 	"fmt"
-	"slices"
 	"time"
 )
 
@@ -82,13 +81,19 @@ func (d *device) quickSelection(labels []int) int {
 	}
 
 	backtrack(0)
-	slices.Sort(d.localLabels)
-	l := len(d.localLabels) 
-	if l%2 == 0 {
-		mediana = d.localLabels[l/2]
-	}else {
-		mediana = d.localLabels[(l+1)/2]
+	
+	occurency := make(map[int]int, len(d.localLabels))
+	for _, t := range d.localLabels {
+		occurency[t]++
 	}
+	initial := 0
+	for k,v := range occurency {
+		if v > initial {
+			mediana = k 
+			initial = v
+		}
+	}
+
 	return mediana
 }
 
@@ -112,7 +117,7 @@ func (d *device) answer(label int) {
 }
 
 func main() {
-	array := []int{2, 5, 4, 1, 3}
+	array := []int{2, 5, 4, 3, 1}
 	labels := make([]int, 0, len(array))
 	d := newDevice(array)
 
