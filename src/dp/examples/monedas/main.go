@@ -33,13 +33,9 @@ func minExchange(vs []int, C int) int {
 				temp2 := *dp[i][j-vs[i]] + 1
 				result := int(math.Min(float64(*temp1), float64(temp2)))
 				dp[i][j] = &result
-			}else {
-				 var v *int
-				if dp[i][j-vs[i]] != nil {
-					result := 1 + *dp[i][j-vs[i]]
-					v = &result
-				}
-				dp[i][j] =  v
+			}else {	
+				result := 1 + *dp[i][j-vs[i]]
+				dp[i][j] =  &result
 			}
 		}
 	}
