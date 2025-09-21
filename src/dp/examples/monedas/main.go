@@ -8,7 +8,7 @@ import (
 func minExchange(vs []int, C int) int {
 	n := len(vs)
 	dp := make([][]*int, n)
-	for i := 0; i < n; i++ {
+	for i := range n {
 		dp[i] = make([]*int, C+1)
 	}
 
@@ -25,7 +25,6 @@ func minExchange(vs []int, C int) int {
 	for i := 1; i < n; i++ {
 		dp[i][0] = &zero
 		for j := 1; j <= C; j++ {
-
 			if j < vs[i] || dp[i][j-vs[i]] == nil {
 				dp[i][j] = dp[i-1][j]
 			}else if dp[i-1][j] != nil {
